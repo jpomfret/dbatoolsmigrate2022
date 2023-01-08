@@ -56,7 +56,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate2:${{ steps.bump.outputs.new_tag }},${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate2:latest
       -
         name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@v
+        uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "dbatoolsmigrate:.*"
           replace: "dbatoolsmigrate:${{ steps.bump.outputs.new_tag }}"
