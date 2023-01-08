@@ -1,15 +1,8 @@
-############################
-#                          #
-#  Migrate.... Everything  #
-#                          #
-############################
-
-# Explore available copy commands
-# Get Databases & Logins
-# Migrate Databases
-# Migrate Logins
-# Upgrade databases
-
+##################################
+#                                #
+#  SQL Server 2022 - Migrations  #
+#             Simple             #
+##################################
 
 # migrating application databases with dbatools
 # https://dbatools.io/migrating-application-dbs/
@@ -24,7 +17,7 @@ $datatbaseSplat = @{
     OutVariable   = "dbs"        # OutVariable to also capture this to use later
 }
 Get-DbaDatabase @datatbaseSplat |
-Select-Object Name, Status, RecoveryModel, Owner, Compatibility |
+Select-Object SqlInstance, Name, Status, RecoveryModel, Owner, Compatibility |
 Format-Table
 
 # Get Logins
@@ -45,6 +38,13 @@ Select-Object Host, login, Program
 # Kill Processes
 Get-DbaProcess @processSplat | Stop-DbaProcess
 
+## Migrate login
+$migrateLoginSplat = @{
+    Source      = $dbatools1
+    Destination = $dbatools2
+}
+Copy-DbaLogin @migrateLoginSplat
+
 ## Migrate the databases
 $migrateDbSplat = @{
     Source        = $dbatools1
@@ -52,28 +52,9 @@ $migrateDbSplat = @{
     Database      = $dbs.name
     BackupRestore = $true
     SharedPath    = '/shared'
-    #SetSourceOffline        = $true
-    Verbose       = $true
+    SetSourceOffline        = $true
 }
 Copy-DbaDatabase @migrateDbSplat
-
-## Migrate login
-$migrateLoginSplat = @{
-    Source      = $dbatools1
-    Destination = $dbatools2
-    Login       = "JessP"
-    Verbose     = $true
-}
-Copy-DbaLogin @migrateLoginSplat
-
-## Set source dbs offline
-$offlineSplat = @{
-    SqlInstance = $dbatools1
-    Database    = "Northwind", "DatabaseAdmin"
-    Offline     = $true
-    Force       = $true
-}
-Set-DbaDbState @offlineSplat
 
 ## upgrade compat level & check all is ok
 $compatSplat = @{
@@ -83,7 +64,7 @@ Get-DbaDbCompatibility @compatSplat |
 Select-Object SqlInstance, Database, Compatibility
 
 $compatSplat.Add('Database', 'Northwind')
-$compatSplat.Add('Compatibility', '150')
+$compatSplat.Add('Compatibility', 'Version160') # working?
 
 Set-DbaDbCompatibility @compatSplat -Verbose
 
