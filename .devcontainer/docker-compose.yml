@@ -1,0 +1,31 @@
+version: "3"
+services:
+    dbatools1:
+      image: jpomfret7/dbatoolslifehacks:v0.12.0
+      volumes:
+        - mydata:/var/opt/backups
+        - shared:/shared
+        # Update this to wherever you want VS Code to mount the folder of your project
+        - ..:/workspace:cached
+      ports:
+        - "4433:1433"
+      container_name: dbatools1
+      hostname: dbatools1
+      
+    dbatools2:
+      image: jpomfret7/dbatoolslifehacks2:v0.12.0
+      volumes:
+        - mydata:/var/opt/backups
+        - shared:/shared
+        # Update this to wherever you want VS Code to mount the folder of your project
+        # So that the second container is rebuilt everytime as well 
+        - ..:/somewhereweirdworkspace:cached
+      ports:
+        - "4434:1433"
+      container_name: dbatools2
+      hostname: dbatools2
+
+
+volumes:
+  mydata:
+  shared:
