@@ -16,5 +16,5 @@ export SQLCMDUSER=sqladmin
 # prep to rename the server to be mssql1 or mssql2
 sqlcmd -d master -Q "EXEC sp_dropserver @@SERVERNAME"
 
-# if it's the primary server, restore pubs and northwind and create a bunch of objects
-sqlcmd -S localhost -d master -Q "EXEC sp_addserver 'mssql2', local"
+# set the server name
+sqlcmd -S localhost -d master -Q "EXEC sp_addserver 'dbatools2', local"

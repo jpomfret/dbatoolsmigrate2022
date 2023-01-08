@@ -34,3 +34,7 @@ RUN $ErrorActionPreference='Stop'; Install-Module -Name dbatools,PSFramework,dba
 # Copy Profile
 
 COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
+
+# set the server name
+SHELL ["/usr/bin/pwsh", "-c"]
+RUN Invoke-DbaQuery -SqlInstance localhost -Query "EXEC sp_addserver 'dbatools1', local"
