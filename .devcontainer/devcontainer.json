@@ -1,5 +1,5 @@
 {
-    "name": "lifehacks",
+    "name": "dbatoolsmigrate",
     "workspaceFolder": "/workspace",
     "dockerComposeFile": [
         "docker-compose.yml"

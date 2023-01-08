@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/mssql/server:2022-latest
+
+# switch to root
 USER root
+
 # Install PowerShell
 RUN apt-get update && apt install -y powershell
 # install git
@@ -8,3 +11,21 @@ RUN apt install -y git
 # some cleanup
 RUN apt-get autoremove -y \
     && apt-get clean -y
+
+# set the pwd and chown to the service account
+WORKDIR /tmp
+RUN chown mssql /tmp
+
+# copy scripts and make bash files executable
+# use copy instead of add, it's safer apparently
+COPY sql scripts /tmp/
+RUN chmod +x /tmp/*.sh
+
+# convert CRLF to LF in case Windows or VS Code changed it
+RUN find . -type f \( -name "*.sql" -o -name "*.env" -o -name "*.sh" \) -exec sed -i 's/\r$//' {} \;
+
+# switch to user mssql or the container will fail
+USER mssql
+
+# run initial setup scripts
+RUN /bin/bash /tmp/start-sql.sh
