@@ -19,6 +19,40 @@ Remove-Item '/shared' -Recurse -Force -ErrorAction SilentlyContinue
 
 Import-Module Pansies
 
+# little app
+$securePassword = ('PubsAdmin' | ConvertTo-SecureString -asPlainText -Force)
+$null = New-DbaLogin -SqlInstance $dbatools1 -Login 'PubsAdmin' -SecurePassword $securePassword
+$null = New-DbaDbUser -SqlInstance $dbatools1 -Login 'PubsAdmin' -Database 'Pubs'
+$null = Add-DbaDbRoleMember -SqlInstance $dbatools1 -User 'PubsAdmin' -Database 'Pubs' -Role 'db_owner' -confirm:$false
+
+function Invoke-PubsApplication {
+    # This will randomly insert rows into the pubs.dbo.sales table on dbatools1 to simulate sales activity
+    # It'll run until you kill it
+
+    Write-PSFHostColor -String "Pubs application is running...forever... Ctrl+C to get out of here" -DefaultColor Green
+
+    # app connection
+    $securePassword = ('PubsAdmin' | ConvertTo-SecureString -asPlainText -Force)
+    $appCred = New-Object System.Management.Automation.PSCredential('PubsAdmin', $securePassword)
+    $appConnection = Connect-DbaInstance -SqlInstance $dbatools1 -SqlCredential $appCred -ClientName 'PubsApplication'
+
+    while ($true) {
+        Write-PSFHostColor -String "Pubs application - a new order! Ctrl+C to get out of here" -DefaultColor Green
+        $newOrder = [PSCustomObject]@{
+        stor_id  = Get-Random (Invoke-DbaQuery -SqlInstance $appConnection -Database pubs -Query 'select stor_id from stores').stor_id
+        ord_num  = Get-DbaRandomizedValue -DataType int -Min 1000 -Max 99999
+        ord_date = get-date
+        qty      = Get-Random -Minimum 1 -Maximum 30
+        payterms = Get-Random (Invoke-DbaQuery -SqlInstance $appConnection -Database pubs -Query 'select distinct payterms from pubs.dbo.sales').payterms
+        title_id = Get-Random (Invoke-DbaQuery -SqlInstance $appConnection -Database pubs -Query 'select title_id from titles').title_id
+        }
+        Write-DbaDataTable -SqlInstance $appConnection -Database pubs -InputObject $newOrder -Table sales
+
+        Start-sleep -Seconds (Get-Random -Maximum 10)
+    }
+}
+
+
 ######## POSH-GIT
 # with props to https://bradwilson.io/blog/prompt/powershell
 # ... Import-Module for posh-git here ...
