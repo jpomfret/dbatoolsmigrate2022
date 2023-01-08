@@ -46,13 +46,14 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
+          context: Containers/
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate:${{ steps.bump.outputs.new_tag }},${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate:latest
       -
         name: Build and push Sql Instance 2
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: Container/
+          context: Containers/
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate2:${{ steps.bump.outputs.new_tag }},${{ secrets.DOCKERHUB_USERNAME }}/dbatoolsmigrate2:latest
       -
         name: Find and Replace
