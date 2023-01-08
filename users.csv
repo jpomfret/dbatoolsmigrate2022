@@ -1,4 +1,0 @@
-﻿User,Password,Server,Database,Role
-Bob,password1234,dbatools1,Northwind,db_datareader
-Jill,password5678,dbatools1,DatabaseAdmin,"db_datareader,db_datawriter"
-Jane,password9876,dbatools1,DatabaseAdmin,db_owner
