@@ -39,6 +39,10 @@ RUN $ErrorActionPreference='Stop'; Install-Module -Name dbatools -AllowPrereleas
 
 COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
+# set the dbatools config to not require encryption - change in SMO
+SHELL ["/usr/bin/pwsh", "-c"]
+RUN Set-DbatoolsConfig -Name sql.connection.trustcert -Value $true; Set-DbatoolsConfig -Name sql.connection.encrypt -Value Optional
+
 # set the server name
 SHELL ["/usr/bin/pwsh", "-c"]
 RUN Invoke-DbaQuery -SqlInstance localhost -Query "EXEC sp_addserver 'dbatools1', local"
