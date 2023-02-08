@@ -1,7 +1,7 @@
 version: "3"
 services:
     dbatools1:
-      image: jpomfret7/dbatoolsmigrate:v0.8.0
+      image: jpomfret7/dbatoolsmigrate:v0.10.0
       volumes:
         - mydata:/var/opt/backups
         - shared:/shared
@@ -13,7 +13,7 @@ services:
       hostname: dbatools1
 
     dbatools2:
-      image: jpomfret7/dbatoolsmigrate2:v0.8.0
+      image: jpomfret7/dbatoolsmigrate2:v0.10.0
       volumes:
         - mydata:/var/opt/backups
         - shared:/shared
