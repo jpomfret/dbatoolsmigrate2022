@@ -41,7 +41,7 @@ COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.p
 
 # set the dbatools config to not require encryption - change in SMO
 SHELL ["/usr/bin/pwsh", "-c"]
-RUN Set-DbatoolsConfig -Name sql.connection.trustcert -Value $true; Set-DbatoolsConfig -Name sql.connection.encrypt -Value Optional
+RUN Set-DbatoolsConfig -Name sql.connection.trustcert -Value $true | Register-DbatoolsConfig; Set-DbatoolsConfig -Name sql.connection.encrypt -Value Optional | Register-DbatoolsConfig
 
 # set the server name
 SHELL ["/usr/bin/pwsh", "-c"]
