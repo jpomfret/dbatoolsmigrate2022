@@ -26,8 +26,8 @@ Get-DbaDatabase @dbSplat | Remove-DbaDatabase -Confirm:$false
 # Bring databases on source back online
 $onlineSplat = @{
     SqlInstance   = $dbatools1
-    Database      = "pubs", "Northwind"
     Online        = $true
+    AllDatabases  = $true
 }
 Set-DbaDbState @onlineSplat
 

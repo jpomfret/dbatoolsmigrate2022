@@ -47,12 +47,12 @@ Copy-DbaLogin @migrateLoginSplat
 
 ## Migrate the databases
 $migrateDbSplat = @{
-    Source        = $dbatools1
-    Destination   = $dbatools2
-    Database      = $dbs.name
-    BackupRestore = $true
-    SharedPath    = '/shared'
-    SetSourceOffline        = $true
+    Source           = $dbatools1
+    Destination      = $dbatools2
+    Database         = $dbs.name
+    BackupRestore    = $true
+    SharedPath       = '/shared'
+    SetSourceOffline = $true
 }
 Copy-DbaDatabase @migrateDbSplat
 
@@ -64,7 +64,7 @@ Get-DbaDbCompatibility @compatSplat |
 Select-Object SqlInstance, Database, Compatibility
 
 $compatSplat.Add('Database', 'Northwind')
-$compatSplat.Add('Compatibility', 'Version160') # working?
+$compatSplat.Add('Compatibility', 'Version160') # REQUIRES dbatools 2.0 and the new SMO
 
 Set-DbaDbCompatibility @compatSplat -Verbose
 
