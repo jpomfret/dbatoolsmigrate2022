@@ -43,6 +43,11 @@ COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.p
 SHELL ["/usr/bin/pwsh", "-c"]
 RUN Set-DbatoolsConfig -Name sql.connection.trustcert -Value $true -passthru | Register-DbatoolsConfig; Set-DbatoolsConfig -Name sql.connection.encrypt -Value Optional -passthru | Register-DbatoolsConfig
 
+# prep to rename the server to be mssql1 or mssql2
+SHELL ["/usr/bin/pwsh", "-c"]
+RUN sqlcmd -d master -Q "EXEC sp_dropserver @@SERVERNAME"
+
 # set the server name
 SHELL ["/usr/bin/pwsh", "-c"]
-RUN Invoke-DbaQuery -SqlInstance localhost -Query "EXEC sp_addserver 'dbatools1', local"
+RUN sqlcmd -S localhost -d master -Q "EXEC sp_addserver 'dbatools1', local"
+
