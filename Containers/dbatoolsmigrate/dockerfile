@@ -35,19 +35,14 @@ RUN $ErrorActionPreference='Stop'; Install-Module -Name PSFramework,dbachecks,po
 SHELL ["/usr/bin/pwsh", "-c"]
 RUN $ErrorActionPreference='Stop'; Install-Module -Name dbatools -AllowPrerelease -AllowClobber -Force;
 
-# Copy Profile
-
-COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
 # set the dbatools config to not require encryption - change in SMO
 SHELL ["/usr/bin/pwsh", "-c"]
 RUN Set-DbatoolsConfig -Name sql.connection.trustcert -Value $true -passthru | Register-DbatoolsConfig; Set-DbatoolsConfig -Name sql.connection.encrypt -Value Optional -passthru | Register-DbatoolsConfig
 
-# prep to rename the server to be mssql1 or mssql2
+# change server name
 SHELL ["/usr/bin/pwsh", "-c"]
-RUN sqlcmd -d master -Q "EXEC sp_dropserver @@SERVERNAME"
+RUN Invoke-DbaQuery -SqlInstance localhost -Query "EXEC sp_dropserver @@SERVERNAME; EXEC sp_addserver 'dbatools1', local;"
 
-# set the server name
-SHELL ["/usr/bin/pwsh", "-c"]
-RUN sqlcmd -S localhost -d master -Q "EXEC sp_addserver 'dbatools1', local"
-
+# Copy Profile
+COPY Profile/profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
