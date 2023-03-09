@@ -53,6 +53,9 @@ RUN chown mssql /tmp
 COPY sql scripts /tmp/
 RUN chmod +x /tmp/*.sh
 
+# permissions to /shared folder
+RUN chmod 774 /shared
+
 # convert CRLF to LF in case Windows or VS Code changed it
 RUN find . -type f \( -name "*.sql" -o -name "*.env" -o -name "*.sh" \) -exec sed -i 's/\r$//' {} \;
 
