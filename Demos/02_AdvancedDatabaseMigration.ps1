@@ -93,7 +93,8 @@ $offlineSplat = @{
 Set-DbaDbState @offlineSplat
 
 # Let's check on our databases
-Get-DbaDatabase -SqlInstance $dbatools1, $dbatools2 -ExcludeSystem | Select-Object SqlInstance, Name, Status, SizeMB
+Get-DbaDatabase -SqlInstance $dbatools1, $dbatools2 -ExcludeSystem |
+Select-Object SqlInstance, Name, Status, SizeMB
 
 # restore the differential and bring the destination online
 $restoreSplat = @{
@@ -105,7 +106,8 @@ $restoreSplat = @{
 Restore-DbaDatabase @restoreSplat
 
 # Let's check on our databases
-Get-DbaDatabase -SqlInstance $dbatools1, $dbatools2 -ExcludeSystem | Select-Object SqlInstance, Name, Status, SizeMB
+Get-DbaDatabase -SqlInstance $dbatools1, $dbatools2 -ExcludeSystem |
+Select-Object SqlInstance, Name, Status, SizeMB
 
 # Let's check our data
 Invoke-DbaQuery -SqlInstance $dbatools2 -Database Pubs -Query 'select @@servername AS [SqlInstance], count(*)NumberOfOrders, max(ord_date) as NewestOrder from pubs.dbo.sales' -OutVariable 'destSales'
